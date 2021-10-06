@@ -47,8 +47,7 @@ Extreme right: -1m
 Extreme back: 1m
 Extreme front: 1m
 
-![cubic space of 2x2x2m](https://1.bp.blogspot.com/-T-VwABuYXoo/YSlER0yqyjI/AAAAAAAAEdQ/PKk0E8DdViUSgEqII8IELWrCyHaNpLhZgCLcBGAsYHQ/s0/TF%2Bimage%2B2.gif)
-
+![cubic space of 2x2x2m](/images/blazepose.gif)
 ### Resources
 For a brief introduction to the BlazePose framework see: 
 https://blog.tensorflow.org/2021/08/3d-pose-detection-with-mediapipe-blazepose-ghum-tfjs.html 
