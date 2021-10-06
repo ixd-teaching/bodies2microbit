@@ -81,7 +81,7 @@ class Bodies2Microbit {
       const config = {
          video: video,
          maxPoses: 1,
-         sampleRate: 100
+         sampleRate: 250
       }
       // start listening to bodies in camera-feed and write bodyparts to microbit
       detectBodies(config, (e) => {
