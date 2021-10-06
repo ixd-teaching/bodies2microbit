@@ -45,7 +45,7 @@ Extreme left: 1m
 Extreme right: -1m
 
 Extreme back: 1m
-Extreme front: 1m
+Extreme front: -1m
 
 ![cubic space of 2x2x2m](/images/blazepose.gif)
 ### Resources
