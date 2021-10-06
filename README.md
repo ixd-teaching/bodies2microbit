@@ -38,14 +38,11 @@ Each of the functions take a 'bodyPartId' as parameter, which is the name of the
 
 The positional data are in meters and goes from -1 to 1 in all three dimensions. The body's hip is center and will have x=0, y=0, z=0. That means that the body is placed inside a cubic space of 2x2x2m:
 
-Extreme bottom: 1m
-Extreme top: -1m
+Extreme bottom: 1m; Extreme top: -1m
 
-Extreme left: 1m
-Extreme right: -1m
+Extreme left: 1m; Extreme right: -1m
 
-Extreme back: 1m
-Extreme front: -1m
+Extreme back: 1m; Extreme front: -1m
 
 ![cubic space of 2x2x2m](/images/blazepose.gif)
 ### Resources
