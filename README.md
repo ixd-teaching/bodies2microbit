@@ -1,4 +1,4 @@
-## Web framework to play with dynamic body pose detection
+## Sending body pose data to Microbit
 
 ### Description
 
