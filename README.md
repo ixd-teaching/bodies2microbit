@@ -2,111 +2,51 @@
 
 ### Description
 
-The framework uses tenserflow.js/posenet to detect one or more 'bodies' from the browser's camera and emits positional data for each body's parts (e.g. 'left wrist', 'right wrist', 'nose', etc.). The framework can use either of two model architectures from posenet: 'MobileNetV1' (default) or 'ResNet50'. ResNet50 is more precise, but also slower and consumes more resources. The framework can be configured to detect either a single body or multiple bodies in the camera stream. When one or more bodies are detected an array of body data is emitted to all listeners. 
+The framework uses a machine learning model (Tensorflow's BlazePose) to detect one or more 'bodies' from the browser's camera and sends positional data to the Microbit for each body's parts (e.g. 'left wrist', 'right wrist', 'nose', etc.) depending on what has been selected. On the Microbit the data can be used control e.g. light, sound, motion, etc. A simple and relatively trivial example would be to turn the volume of a sound up when our wrists are moving away from each other and down when they move closer. 
 
-### Files and folders
-The framework is found in 'lib/bodydetection.js'.
-Example sketches are found in 'sketches'.
+### Setup
+To use the framework you first need to connect your Microbit to your computer and download the code that enables receiving body data from the computer's camera. The code is found here: https://makecode.microbit.org/_WHdhjAYtqRbr
 
-### Important classes and objects 
-The important classes and objects in the framework are:
+On the Makecode web page, first press 'Edit Code', then press the three dots '...' right of 'Download' button to connect your device and when the device is connected you can press 'Download' to get the code onto the Microbit. 
 
-*Class BodyStream:*
-Bodystream loads and sets up the model by hooking it up to the webcam via the provided HTML video element. When started the BodyStream continuously analyses the camera footage and when body poses are detected they are emitted via 'bodiesDetected' event.
+After the Microbit is setup you should run this folder a webserver and access it from a browser with a camera. When index.html is loaded it will access the camera and begin detecting any bodies in the camera feed. Then you press the 'Connect' button and positional data on selected body parts will be send to the Microbit. 
 
-*Class Bodies:*
-Bodies contain all data and methods with regard to bodies detected in one video frame. 
-
-*Class Body:*
-Body contain all data and methods with regard to a single body detected in a video snapshot, i.e. body parts and confidence score. The Body class also has methods for relating body parts to each other (e.g. distance between them).
-
-*Class BodyPart:*
-BodyPart contain all data and methods with regard to a single bodypart (e.g. left knee), which is position, speed and confidence score.
-
-*Object bodyParts:*
-The object bodyParts enumerates all body parts. When body parts are referenced we should use the names in bodyParts, e.g. 'bodyParts.leftFoot'.
+Pressing 'Disconnect' will often fail. In that case you should reload the page.
 
 ### Usage
-To setup body detection instantiate a new object of the class 'Bodystream' with a configuration object:
+The code running on the Microbit is written in Typescript. In Makecode you can choose to program visually or writing Typescript code directly. The part of the code relevant for your purposes are the following helper functions: getX, getY, getZ, getSpeed, getConfidence. Each of the functions take a 'bodyPartId' as parameter, which is the name of the body part you want data on. If you, for example, want to access the speed of the nose you would write: getSpeed('nose') and it will return the current speed of the nose in m/s (updated every 100ms). If you want the 'y' position of the left eye would write: getY('left_eye') and so on. The getConfidence returns a number between 0-1 which indicates how confident the machine learning algorithm is bodyPart data. The more of the body that is visible on the camera, the better the algorithm works. Be aware that you need to select the body parts you work with on the web page running in the browser, otherwise no data will be received. The full list of bodyPartId's are: 
 
-~~~
-const bodies = new BodyStream ({
-      posenet: posenet,
-      architecture: modelArchitecture.MobileNetV1, 
-      detectionType: detectionType.singleBody, 
-      videoElement: document.getElementById('video'), 
-      samplingRate: 250})
-~~~
+"nose",
+"left_eye",
+"right_eye",
+"left_ear",
+"right_ear",
+"left_shoulder",
+"right_shoulder",
+"left_elbow",
+"right_elbow",
+"left_wrist",
+"right_wrist",
+"left_hip",
+"right_hip",
+"left_knee",
+"right_knee",
+"left_ankle",
+"right_ankle"
 
-The actual detection is started by calling BodyStream.start and it stops when timeout runs out:
+The positional data are in meters and goes from -1 to 1 in all three dimensions. The body's hip is center and will have x=0, y=0, z=0. That means that the body is placed inside a cubic space of 2x2x2m:
 
-~~~
-BodyStream.start(timeout) 
-~~~
+Extreme bottom: 1m
+Extreme top: -1m
 
-If 'start' is called with no timeout it will run indefinitely. The body detection can also be stopped by calling:
+Extreme left: 1m
+Extreme right: -1m
 
-~~~ 
-BodyStream.stop ()
-~~~
+Extreme back: 1m
+Extreme front: 1m
 
-To get a list of bodies when bodies are detected listen to the event 'bodiesDetected':
-
-~~~
-bodies.addEventListener('bodiesDetected', (e) => {
-    bodies = e.detail.bodies
-})
-~~~
-
-The list of bodies is accessible from e.detail.bodies and is of class 'Bodies'.
-
-Bodies.getNumOfBodies() returns the number of bodies detected.
-
-Bodies.getBodyAt(index) retrieves a particular body of the class 'Body'. The first body detected in a frame has index value 0.
-
-A particular body part can be retrieved by calling Body.bodyPart(bodyPartName). If we want to retrieve data for the right knee, we can write:
-
-~~~
-body.getBodyPart(bodyParts.rightKnee)
-~~~
-
-The distance between two bodyparts can be retrieved by calling:
-
-~~~javascript
-Body.getDistanceBetweenBodyParts(bodyParts.leftWrist, bodyParts.rightWrist)
-~~~
-
-Body parts are defined as follows:
-
-~~~javascript
-const bodyParts = {
-    nose: "nose",
-    leftEye: "leftEye",
-    rightEye: "rightEye",
-    leftEar: "leftEar",
-    rightEar: "rightEar",
-    leftShoulder: "leftShoulder",
-    rightShoulder: "rightShoulder",
-    leftElbow: "leftElbow",
-    rightElbow: "rightElbow",
-    leftWrist: "leftWrist",
-    rightWrist: "rightWrist",
-    leftHip: "leftHip",
-    rightHip: "rightHip",
-    leftKnee: "leftKnee",
-    rightKnee: "rightKnee",
-    leftAnkle: "leftAnkle",
-    rightAnkle: "rightAnkle"
-}
-~~~
+For a further illustration of this cubic space see the link to the BlazePose framework.
 
 ### Resources
-To read more about use and configuration of tensorflow.js/posenet and Tensorflow in general:
-
-*tenserflow.js/posenet*
-
-https://github.com/tensorflow/tfjs-models/tree/master/posenet
-
-*Tensorflow*
-
-https://www.tensorflow.org/
+For a brief introduction to the BlazePose framework see: 
+https://blog.tensorflow.org/2021/08/3d-pose-detection-with-mediapipe-blazepose-ghum-tfjs.html 

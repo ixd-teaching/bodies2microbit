@@ -38,7 +38,7 @@ function drawBodyParts(canvas, bodies) {
                   xOffset = 130
                }
                else {
-                  yOffset = yOffset + 80
+                  yOffset = yOffset + 100
                }
             }
          })
