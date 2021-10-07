@@ -55,7 +55,10 @@ function serializeBodyPart(name, body, bodyIndex, bodyPartIndex) {
 }
 
 function bodyPartEnabled(name) {
-   return !document.getElementById(name) ? false : document.getElementById(name).checked
+   let checked = false
+   if (document.getElementById(name)) 
+       checked = document.getElementById(name).checked
+   return checked
 }
 
 class Bodies2Microbit {
